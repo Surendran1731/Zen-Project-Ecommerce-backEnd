@@ -50,20 +50,24 @@ export const addToCart = async (req, res) => {
 
 export const fetchCart = async (req, res) => {
   try {
-    const cart = await Cart.find({ user: req.user._id }).populate("product");
-
+    const cart = await Cart.find({ user: req.user._id }).populate('user').populate('product');
+    console.log(cart);
     const sumofQuantities = cart.reduce(
       (total, item) => total + item.quantity,
       0
     );
+    // console.log(cart.map((e)=>e.product));
 
     let subTotal = 0;
 
     cart.forEach((i) => {
+      console.log(i);
       const itemSubtotal = i.product.price * i.quantity;
-      subTotal += itemSubtotal;
+      return subTotal += itemSubtotal;
     });
 
+    // console.log(cart);
+    // console.log(cart, subTotal, sumofQuantities );
     res.json({ cart, subTotal, sumofQuantities });
   } catch (error) {
     res.status(500).json({
